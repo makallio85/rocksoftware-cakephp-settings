@@ -1,0 +1,14 @@
+parameters:
+    level: 8
+    bootstrapFiles:
+        - vendor/cakephp/cakephp/src/functions.php
+        # Declares the controller's parent (an alias of CakePHP's controller here).
+        - src/Controller/SettingsBaseController.php
+    paths:
+        - src
+        - tests/TestCase
+        - tests/test_app/src
+    excludePaths:
+        - src/Controller/SettingsBaseController.php
+    parallel:
+        maximumNumberOfProcesses: 2
