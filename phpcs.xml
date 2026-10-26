@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ruleset name="rocksoftware-cakephp-settings">
+    <rule ref="CakePHP"/>
+    <file>src/</file>
+    <file>tests/</file>
+    <file>templates/</file>
+</ruleset>

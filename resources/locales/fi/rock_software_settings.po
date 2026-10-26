@@ -1,0 +1,86 @@
+# Finnish translations for makallio85/rocksoftware-cakephp-settings.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fi\n"
+
+msgid "Settings"
+msgstr "Asetukset"
+
+msgid "Application"
+msgstr "Sovellus"
+
+msgid "How this application names itself: in the top bar, on the sign-in page and in the browser tab."
+msgstr "Miten tämä sovellus esittäytyy: yläpalkissa, kirjautumissivulla ja selaimen välilehdellä."
+
+msgid "Application name"
+msgstr "Sovelluksen nimi"
+
+msgid "Shown in the top bar, on the sign-in card and after every page title."
+msgstr "Näkyy yläpalkissa, kirjautumiskortilla ja jokaisen sivun otsikon perässä."
+
+msgid "Line under the name"
+msgstr "Rivi nimen alla"
+
+msgid "Shown under the name on the sign-in card only. Leave it empty when the name already says it."
+msgstr "Näkyy vain kirjautumiskortilla nimen alla. Jätä tyhjäksi, jos nimi kertoo jo saman."
+
+msgid "(optional)"
+msgstr "(vapaaehtoinen)"
+
+msgid "(none)"
+msgstr "(ei mitään)"
+
+msgid "Save"
+msgstr "Tallenna"
+
+msgid "Saved."
+msgstr "Tallennettu."
+
+msgid "Nothing changed."
+msgstr "Mikään ei muuttunut."
+
+msgid "Not saved. Check the fields marked in red."
+msgstr "Ei tallennettu. Tarkista punaisella merkityt kentät."
+
+msgid "Last changed {0}"
+msgstr "Muutettu viimeksi {0}"
+
+msgid "Last changed {0} by {1}"
+msgstr "Muutettu viimeksi {0}, muuttaja {1}"
+
+msgid "No settings yet."
+msgstr "Asetuksia ei vielä ole."
+
+msgid "No such settings."
+msgstr "Näitä asetuksia ei ole."
+
+msgid "You may not change the settings."
+msgstr "Sinulla ei ole oikeutta muuttaa asetuksia."
+
+msgid "Breadcrumb"
+msgstr "Murupolku"
+
+msgid "This is required."
+msgstr "Pakollinen tieto."
+
+msgid "Enter text."
+msgstr "Kirjoita tekstiä."
+
+msgid "At most {0} characters."
+msgstr "Enintään {0} merkkiä."
+
+msgid "Choose yes or no."
+msgstr "Valitse kyllä tai ei."
+
+msgid "Enter a whole number."
+msgstr "Kirjoita kokonaisluku."
+
+msgid "At least {0}."
+msgstr "Vähintään {0}."
+
+msgid "At most {0}."
+msgstr "Enintään {0}."
+
+msgid "Choose one of the list."
+msgstr "Valitse jokin listan vaihtoehdoista."
