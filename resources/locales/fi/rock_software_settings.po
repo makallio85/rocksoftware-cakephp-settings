@@ -84,3 +84,12 @@ msgstr "Enintään {0}."
 
 msgid "Choose one of the list."
 msgstr "Valitse jokin listan vaihtoehdoista."
+
+msgid "Enter email addresses, one per line."
+msgstr "Kirjoita sähköpostiosoitteet, yksi riville."
+
+msgid "Not an email address: {0}"
+msgstr "Ei sähköpostiosoite: {0}"
+
+msgid "At most {0} addresses."
+msgstr "Enintään {0} osoitetta."

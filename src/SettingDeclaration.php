@@ -38,7 +38,7 @@ final class SettingDeclaration
      * @param array<string, \Closure|string> $choices `Choice`: each value and its label, in order.
      * @param int|null $maxLength `Text`, `LongText`: the most characters accepted.
      * @param int|null $min `WholeNumber`: the smallest number accepted.
-     * @param int|null $max `WholeNumber`: the largest number accepted.
+     * @param int|null $max `WholeNumber`: the largest number accepted; `EmailAddresses`: the most addresses.
      */
     private function __construct(
         public readonly string $key,
@@ -179,6 +179,29 @@ final class SettingDeclaration
     }
 
     /**
+     * Email addresses, one per line: who a report goes to, who is told when
+     * something fails. Each is checked; repeats are dropped, whatever their case.
+     *
+     * @param string $key `<owner>.<name>`.
+     * @param \Closure|string $label The label.
+     * @param \Closure|string|null $help The help text.
+     * @param array<int, string> $default The default.
+     * @param bool $isRequired Whether an empty list is refused.
+     * @param int $maxCount The most addresses accepted.
+     * @return self
+     */
+    public static function emailAddresses(
+        string $key,
+        Closure|string $label,
+        Closure|string|null $help = null,
+        array $default = [],
+        bool $isRequired = false,
+        int $maxCount = 50,
+    ): self {
+        return new self($key, SettingType::EmailAddresses, $label, $help, $default, $isRequired, max: $maxCount);
+    }
+
+    /**
      * The owner: the part before the dot, which is also the settings page's section.
      *
      * @return string
@@ -238,6 +261,8 @@ final class SettingDeclaration
             SettingType::YesNo => is_bool($value),
             SettingType::WholeNumber => $value === null || is_int($value),
             SettingType::Choice => $value === null || (is_string($value) && array_key_exists($value, $this->choices)),
+            SettingType::EmailAddresses => is_array($value) && array_is_list($value)
+                && array_filter($value, static fn(mixed $email): bool => !self::isEmailAddress($email)) === [],
         };
     }
 
@@ -256,6 +281,7 @@ final class SettingDeclaration
             SettingType::YesNo => $this->parseYesNo($input),
             SettingType::WholeNumber => $this->parseWholeNumber($input),
             SettingType::Choice => $this->parseChoice($input),
+            SettingType::EmailAddresses => $this->parseEmailAddresses($input),
         };
     }
 
@@ -353,6 +379,60 @@ final class SettingDeclaration
         }
 
         return $input;
+    }
+
+    /**
+     * Addresses from a list given in code, or from text with one per line
+     * (commas, semicolons and spaces separate them too).
+     *
+     * @param mixed $input What was submitted.
+     * @return array<int, string>
+     */
+    private function parseEmailAddresses(mixed $input): array
+    {
+        if (is_array($input)) {
+            $parts = $input;
+        } elseif ($input === null || is_string($input)) {
+            $parts = preg_split('/[\s,;]+/', (string)$input, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        } else {
+            throw new InvalidSettingValueException(
+                __d('rock_software_settings', 'Enter email addresses, one per line.'),
+            );
+        }
+
+        $emails = [];
+        foreach ($parts as $part) {
+            $email = is_string($part) ? trim($part) : '';
+            if (!self::isEmailAddress($email)) {
+                throw new InvalidSettingValueException(__d(
+                    'rock_software_settings',
+                    'Not an email address: {0}',
+                    is_scalar($part) ? (string)$part : '',
+                ));
+            }
+            $emails[mb_strtolower($email)] ??= $email;
+        }
+        if ($emails === [] && $this->isRequired) {
+            throw new InvalidSettingValueException(__d('rock_software_settings', 'This is required.'));
+        }
+        if ($this->max !== null && count($emails) > $this->max) {
+            throw new InvalidSettingValueException(__d(
+                'rock_software_settings',
+                'At most {0} addresses.',
+                $this->max,
+            ));
+        }
+
+        return array_values($emails);
+    }
+
+    /**
+     * @param mixed $value A value.
+     * @return bool
+     */
+    private static function isEmailAddress(mixed $value): bool
+    {
+        return is_string($value) && strlen($value) <= 254 && filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**

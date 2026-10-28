@@ -96,6 +96,13 @@ $owner = $section->owner;
                             'rows' => 4,
                             'maxlength' => $declaration->maxLength,
                         ]) ?>
+                    <?php elseif ($declaration->type === SettingType::EmailAddresses) : ?>
+                        <?= $this->Form->textarea($name, $common + [
+                            'class' => 'form-control' . $invalid,
+                            'rows' => 3,
+                            'autocomplete' => 'off',
+                            'spellcheck' => 'false',
+                        ]) ?>
                     <?php elseif ($declaration->type === SettingType::WholeNumber) : ?>
                         <?= $this->Form->text($name, $common + [
                             'type' => 'number',

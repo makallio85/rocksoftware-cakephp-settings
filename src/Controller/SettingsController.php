@@ -205,6 +205,9 @@ class SettingsController extends SettingsBaseController
         if ($declaration->type === SettingType::YesNo) {
             return $value === true || $value === '1' || $value === 1;
         }
+        if ($declaration->type === SettingType::EmailAddresses && is_array($value)) {
+            return implode("\n", array_filter($value, 'is_string'));
+        }
 
         return is_scalar($value) ? (string)$value : '';
     }

@@ -24,4 +24,7 @@ enum SettingType: string
 
     /** One value from a list: a `string` key of the declared choices, or `null` when an optional one is left empty. */
     case Choice = 'choice';
+
+    /** Email addresses, one per line: a `list<string>`, empty when none. */
+    case EmailAddresses = 'email_addresses';
 }

@@ -220,6 +220,49 @@ class SettingsTest extends TestCase
         $this->assertNull(Settings::get('reports.paper'));
     }
 
+    public function testEmailAddressesAreReadAsAListWithoutRepeats(): void
+    {
+        Settings::declare(SettingDeclaration::emailAddresses('reports.recipients', 'Recipients'));
+
+        $this->assertSame([], Settings::get('reports.recipients'), 'Empty until someone is added.');
+
+        $result = Settings::save('reports', [
+            'recipients' => "alex@example.test\r\nsam@example.test, ALEX@example.test;\n\n",
+        ]);
+
+        $this->assertTrue($result->isSaved());
+        Settings::clearCache();
+        $this->assertSame(['alex@example.test', 'sam@example.test'], Settings::get('reports.recipients'));
+
+        Settings::set('reports.recipients', ['robin@example.test']);
+        $this->assertSame(['robin@example.test'], Settings::get('reports.recipients'), 'A list from code is accepted.');
+    }
+
+    public function testEmailAddressesRefuseWhatIsNotOne(): void
+    {
+        Settings::declare(SettingDeclaration::emailAddresses('reports.recipients', 'Recipients', maxCount: 2));
+        Settings::declare(SettingDeclaration::emailAddresses('reports.copies_to', 'Copies to', isRequired: true));
+
+        $result = Settings::save('reports', [
+            'recipients' => "alex@example.test\nnot-an-address",
+            'copies_to' => '  ',
+        ]);
+
+        $this->assertSame([
+            'recipients' => 'Not an email address: not-an-address',
+            'copies_to' => 'This is required.',
+        ], $result->errors);
+        $this->assertSame(
+            ['recipients' => 'At most 2 addresses.'],
+            Settings::save('reports', [
+                'recipients' => 'a@example.test b@example.test c@example.test',
+                'copies_to' => 'a@example.test',
+            ])->errors,
+        );
+        $this->expectException(InvalidArgumentException::class);
+        Settings::declare(SettingDeclaration::emailAddresses('reports.cc', 'Cc', default: ['nobody']));
+    }
+
     public function testADeclarationIsCheckedWhenMade(): void
     {
         foreach (
