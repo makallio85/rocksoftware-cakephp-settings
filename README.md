@@ -141,6 +141,11 @@ Settings::declare(SettingDeclaration::choice(
     default: 'a4',
     isRequired: true,
 ));
+Settings::declare(SettingDeclaration::emailAddresses(
+    'reports.recipients',
+    label: fn(): string => __('Send reports to'),
+    maxCount: 20,                                 // the most addresses; 50 when left out
+));
 ```
 
 - **Texts as closures.** A label, help text, section title or choice label is a string or a
@@ -148,6 +153,8 @@ Settings::declare(SettingDeclaration::choice(
   the request's language.
 - **Yes/no keys** are named as the question they answer: `is_…`, `has_…`, `can_…`.
 - **Choice values** are non-numeric strings (`a4`, not `1`).
+- **Email addresses** are asked one per line (commas and spaces separate them too) and read as a
+  `list<string>`, empty when none. Each is checked; a repeat is dropped, whatever its case.
 - An owner without `declareSection()` gets a section titled by its name.
 - Declaring a key again replaces its declaration.
 - A default that is not of the type, or a choice default not in the list, throws when declared.

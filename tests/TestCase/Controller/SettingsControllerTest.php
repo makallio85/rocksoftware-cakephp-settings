@@ -214,6 +214,25 @@ class SettingsControllerTest extends TestCase
         $this->assertFalse(Settings::isStored('application.organization_name'));
     }
 
+    public function testEmailAddressesAreAskedOnePerLine(): void
+    {
+        Settings::declare(SettingDeclaration::emailAddresses('reports.recipients', 'Recipients'));
+        Settings::set('reports.recipients', ['alex@example.test', 'sam@example.test']);
+        $this->signIn();
+
+        $this->get('/settings/reports');
+        $this->assertResponseOk();
+        $this->assertResponseContains("alex@example.test\nsam@example.test</textarea>");
+
+        $this->post('/settings/reports', [
+            'values' => ['recipients' => "alex@example.test\nwrong"],
+            'return_to' => 'section',
+        ]);
+        $this->assertResponseOk();
+        $this->assertResponseContains('id="settings-reports-recipients-error">Not an email address: wrong</div>');
+        $this->assertResponseContains("alex@example.test\nwrong</textarea>", 'What was typed is kept.');
+    }
+
     public function testSavingNeedsAPost(): void
     {
         $this->signIn();
